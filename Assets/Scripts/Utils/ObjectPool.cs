@@ -16,7 +16,7 @@ namespace StrategyGame.Utils
             _parent = parent;
             CreatePoolObjects();
         }
-        private void CreatePoolObjects()
+        public void CreatePoolObjects()
         {
             for (int i = 0; i < _size; i++)
             {
@@ -25,7 +25,7 @@ namespace StrategyGame.Utils
                 pool.Add(spawnedObj);
             }
         }
-        public GameObject GetObject()
+        public virtual GameObject GetObject()
         {
             int i = 0;
             while (pool[i].activeSelf)
@@ -41,7 +41,7 @@ namespace StrategyGame.Utils
             pool[i].SetActive(true);
             return pool[i];
         }
-        public void ReleaseObject(GameObject obj)
+        public virtual void ReleaseObject(GameObject obj)
         {
             obj.SetActive(false);
         }

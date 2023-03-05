@@ -10,11 +10,14 @@ namespace StrategyGame.Managers
     {
       
         [SerializeField] private ProductionMenuView _productionMenuView;
+        [SerializeField] private ProductionMenuView _informationPanelView;
         public void Initialize()
         {
-            ProductionMenu rollABallMini = new ProductionMenu(_productionMenuView);
+            ProductionMenu productionMenu = new ProductionMenu(_productionMenuView);
+            productionMenu.Initialize();
 
-            rollABallMini.Initialize();
+            //TODO
+           // InformationPanel.Instance.InformationPanelView = _informationPanelView;
         }
     }
 
