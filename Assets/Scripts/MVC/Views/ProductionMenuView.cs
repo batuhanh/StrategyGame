@@ -1,3 +1,4 @@
+using StrategyGame.Core.UI;
 using StrategyGame.Utils;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace StrategyGame.MVC.Views
         public Context Context { get { return _context; } }
         private bool _isInitialized = false;
         private Context _context;
+        [SerializeField] private InfiniteScrollView _infiniteScrollView;
         public void Initialize(Context context)
         {
             if (!IsInitialized)
