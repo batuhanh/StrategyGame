@@ -8,7 +8,7 @@ namespace StrategyGame.Utils
         private int _size;
         GameObject[] _prefabs;
         Transform _parent;
-        private List<GameObject> pool = new List<GameObject>();
+        protected List<GameObject> pool = new List<GameObject>();
         public ObjectPool(GameObject[] prefabs, int size, Transform parent)
         {
             _prefabs = prefabs;
@@ -16,7 +16,7 @@ namespace StrategyGame.Utils
             _parent = parent;
             CreatePoolObjects();
         }
-        public void CreatePoolObjects()
+        private void CreatePoolObjects()
         {
             for (int i = 0; i < _size; i++)
             {
