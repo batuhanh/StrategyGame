@@ -13,13 +13,15 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         public override int CurrentHealth { get { return _currentHealth; } }
         public override bool IsPlaced { get { return _isPlaced; } }
         public override Vector2 GridPosition { get { return _gridPosition; } }
+        public override Vector2 Size { get { return _size; } }
 
-        private string _name;
-        private Sprite _image;
-        private int _startHealth;
-        private int _currentHealth;
-        private bool _isPlaced;
-        private Vector2 _gridPosition;
+        [SerializeField] private string _name;
+        [SerializeField] private Sprite _image;
+        [SerializeField] private int _startHealth;
+        [SerializeField] private int _currentHealth;
+        [SerializeField] private bool _isPlaced;
+        [SerializeField] private Vector2 _gridPosition;
+        [SerializeField] private Vector2 _size;
 
     }
 }

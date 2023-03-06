@@ -14,6 +14,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         public abstract int CurrentHealth { get; }
         public abstract bool IsPlaced { get; }
         public abstract Vector2 GridPosition { get; }
+        public abstract Vector2 Size { get; }
     }
     public interface IBuilding // Just for marking
     {

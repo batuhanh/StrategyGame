@@ -1,18 +1,26 @@
+using StrategyGame.Core.Gameplay.BuildingSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PowerPlant : MonoBehaviour
+namespace StrategyGame.Core.Gameplay.BuildingSystem
 {
-    // Start is called before the first frame update
-    void Start()
+    public class PowerPlant : Building
     {
-        
-    }
+        public override string Name { get { return _name; } }
+        public override Sprite Image { get { return _image; } }
+        public override int StartHealth { get { return _startHealth; } }
+        public override int CurrentHealth { get { return _currentHealth; } }
+        public override bool IsPlaced { get { return _isPlaced; } }
+        public override Vector2 GridPosition { get { return _gridPosition; } }
+        public override Vector2 Size { get { return _size; } }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        [SerializeField] private string _name;
+        [SerializeField] private Sprite _image;
+        [SerializeField] private int _startHealth;
+        [SerializeField] private int _currentHealth;
+        [SerializeField] private bool _isPlaced;
+        [SerializeField] private Vector2 _gridPosition;
+        [SerializeField] private Vector2 _size;
     }
 }
