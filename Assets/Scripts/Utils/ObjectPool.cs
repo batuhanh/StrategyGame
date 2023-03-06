@@ -6,12 +6,12 @@ namespace StrategyGame.Utils
     public class ObjectPool
     {
         private int _size;
-        GameObject _prefab;
+        GameObject[] _prefabs;
         Transform _parent;
         private List<GameObject> pool = new List<GameObject>();
-        public ObjectPool(GameObject prefab, int size, Transform parent)
+        public ObjectPool(GameObject[] prefabs, int size, Transform parent)
         {
-            _prefab = prefab;
+            _prefabs = prefabs;
             _size = size;
             _parent = parent;
             CreatePoolObjects();
@@ -20,7 +20,7 @@ namespace StrategyGame.Utils
         {
             for (int i = 0; i < _size; i++)
             {
-                GameObject spawnedObj = GameObject.Instantiate(_prefab, _parent);
+                GameObject spawnedObj = GameObject.Instantiate(_prefabs[i%_prefabs.Length], _parent);
                 spawnedObj.SetActive(false);
                 pool.Add(spawnedObj);
             }
@@ -33,7 +33,7 @@ namespace StrategyGame.Utils
                 i++;
                 if (i >= pool.Count)
                 {
-                    GameObject spawnedObj = GameObject.Instantiate(_prefab, _parent);
+                    GameObject spawnedObj = GameObject.Instantiate(_prefabs[i % _prefabs.Length], _parent);
                     pool.Add(spawnedObj);
                     return spawnedObj;
                 }

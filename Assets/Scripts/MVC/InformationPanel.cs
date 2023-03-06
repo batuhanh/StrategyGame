@@ -14,7 +14,7 @@ namespace StrategyGame.MVC
         public bool IsInitialized { get { return _isInitialized; } }
         public Context Context { get { return _context; } }
         public InformationPanelModel InformationPanelModel { get { return _informationPanelModel; } }
-        public InformationPanelView InformationPanelView { get { return _informationPanelView; } }
+        public InformationPanelView InformationPanelView { get { return _informationPanelView; } set { _informationPanelView = value; } }
         public InformationPanelController InformationPanelController { get { return _informationPanelController; } }
 
         private bool _isInitialized = false;

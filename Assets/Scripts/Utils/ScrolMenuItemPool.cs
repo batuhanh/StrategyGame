@@ -9,8 +9,8 @@ namespace StrategyGame.Utils
 {
     public class ScrolMenuItemPool : ObjectPool 
     {
-        public ScrolMenuItemPool(GameObject prefab, int size, Transform parent)
-            : base(prefab, size, parent)
+        public ScrolMenuItemPool(GameObject[] prefabs, int size, Transform parent)
+            : base(prefabs, size, parent)
         {
            
         }

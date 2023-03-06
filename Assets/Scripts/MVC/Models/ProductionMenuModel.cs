@@ -8,6 +8,7 @@ namespace StrategyGame.MVC.Models
 {
     public class ProductionMenuModel : BaseModel
     {
+        
         public override void Initialize(Context context)
         {
             if (!IsInitialized)
