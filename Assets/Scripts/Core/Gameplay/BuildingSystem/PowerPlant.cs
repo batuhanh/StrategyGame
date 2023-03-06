@@ -22,5 +22,6 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         [SerializeField] private bool _isPlaced;
         [SerializeField] private Vector2 _gridPosition;
         [SerializeField] private Vector2 _size;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
     }
 }

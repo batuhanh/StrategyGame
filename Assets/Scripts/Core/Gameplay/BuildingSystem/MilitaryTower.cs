@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace StrategyGame.Core.Gameplay.BuildingSystem
 {
-    public class RadioTower : Building
+    public class MilitaryTower : Building
     {
         public override string Name { get { return _name; } }
         public override Sprite Image { get { return _image; } }
@@ -22,5 +22,6 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         [SerializeField] private bool _isPlaced;
         [SerializeField] private Vector2 _gridPosition;
         [SerializeField] private Vector2 _size;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
     }
 }
