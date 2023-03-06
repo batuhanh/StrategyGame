@@ -1,72 +1,82 @@
 using StrategyGame.Utils;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace StrategyGame.Core.UI
 {
-    public enum ScrollDirection
-    {
-        None,
-        Up,
-        Down
-    }
     public class InfiniteScrollView : MonoBehaviour
     {
         public bool IsInitialized { get { return _isInitialized; } }
 
-        [SerializeField] private int _itemCount;
-        [SerializeField] private GameObject[] _itemPrefabs;
-        [SerializeField] private GridLayoutGroup layout;
-        [SerializeField] private ScrollRect scrollRect;
-        [SerializeField] private float _threshold;
-        private ScrolMenuItemPool _itemPool;
-        private Vector2 _offset;
-        private float _minScrollVal = 0.39f;
-        private float _maxScrollVal = 0.44f;
-        private ScrollDirection _lastScrollDir;
         private bool _isInitialized = false;
-        private void Start()
+        private ScrollRect _scrollRect;
+        private GridLayoutGroup _gridLayoutGroup;
+        private float _disableMarginY = 0;
+        private bool _isGridDisabled = false;
+        private List<RectTransform> menuItems = new List<RectTransform>();
+        private Vector2 _newPos = Vector2.zero;
+        [SerializeField] private float _treshold;
+        private int _itemCount = 0;
+        private int _columnCount = 0;
+        private float _offset = 0;
+
+        void Awake()
         {
-            if (_itemPrefabs.Length > 0)
+            Initialize();
+        }
+        public void Initialize()
+        {
+            if (!_isInitialized)
             {
-                _itemPool = new ScrolMenuItemPool(_itemPrefabs, _itemCount, layout.transform);
-                for (int i = 0; i < _itemCount; i++)
+                _scrollRect = GetComponent<ScrollRect>();
+                _scrollRect.onValueChanged.AddListener(OnScroll);
+                _scrollRect.movementType = ScrollRect.MovementType.Unrestricted;
+
+                for (int i = 0; i < _scrollRect.content.childCount; i++)
                 {
-                    _itemPool.GetObject();
+                    menuItems.Add(_scrollRect.content.GetChild(i).GetComponent<RectTransform>());
                 }
-                _offset = new Vector2(0, layout.cellSize.y + layout.spacing.y);
+                if (_scrollRect.content.GetComponent<GridLayoutGroup>() != null)
+                {
+                    _gridLayoutGroup = _scrollRect.content.GetComponent<GridLayoutGroup>();
+                    _columnCount = _gridLayoutGroup.constraintCount;
+                }
+                _itemCount = _scrollRect.content.childCount;
                 _isInitialized = true;
             }
         }
-        public void OnScrolled(Vector2 value)
+        void DisableGridComponents()
         {
-            if (_isInitialized)
+            _offset = menuItems[0].GetComponent<RectTransform>().anchoredPosition.y - menuItems[1].GetComponent<RectTransform>().anchoredPosition.y;
+            _disableMarginY = _offset * (_itemCount / _columnCount) / 2; 
+            if (_gridLayoutGroup)
             {
-                if (value.y <= _minScrollVal)
-                    _lastScrollDir = ScrollDirection.Down;
-                else if (value.y >= _maxScrollVal)
-                    _lastScrollDir = ScrollDirection.Up;
-                else
-                    _lastScrollDir = ScrollDirection.None;
+                _gridLayoutGroup.enabled = false;
+            }
+            _isGridDisabled = true;
+        }
+        public void OnScroll(Vector2 pos)
+        {
+            if (!_isGridDisabled)
+                DisableGridComponents();
 
-                if (_lastScrollDir != ScrollDirection.None)
+            for (int i = 0; i < menuItems.Count; i++)
+            {
+                if (_scrollRect.transform.InverseTransformPoint(menuItems[i].gameObject.transform.position).y > _disableMarginY + _treshold)
                 {
-                    int oldIndex = 0;
-                    int newIndex = _itemCount - 1;
-                    Vector2 curOffset = _offset;
-                    if (_lastScrollDir == ScrollDirection.Down)
-                    {
-                        oldIndex = _itemCount - 1;
-                        newIndex = 0;
-                        curOffset = -_offset;
-                    }
-
-                    for (int i = 0; i < 2; i++)
-                    {
-                        Transform firstChild = scrollRect.content.GetChild(oldIndex);
-                        firstChild.SetSiblingIndex(newIndex);
-                    }
-                    scrollRect.content.anchoredPosition += curOffset;
+                    _newPos = menuItems[i].anchoredPosition;
+                    _newPos.y -= (_itemCount / _columnCount) * _offset;
+                    menuItems[i].anchoredPosition = _newPos;
+                    _scrollRect.content.GetChild(_itemCount - 1).transform.SetAsFirstSibling();
+                }
+                else if (_scrollRect.transform.InverseTransformPoint(menuItems[i].gameObject.transform.position).y < -_disableMarginY)
+                {
+                    _newPos = menuItems[i].anchoredPosition;
+                    _newPos.y += (_itemCount / _columnCount) * _offset;
+                    menuItems[i].anchoredPosition = _newPos;
+                    _scrollRect.content.GetChild(0).transform.SetAsLastSibling();
                 }
             }
         }
