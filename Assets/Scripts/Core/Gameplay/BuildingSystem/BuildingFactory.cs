@@ -12,6 +12,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         [SerializeField] private GameObject _armoryPrefab;
         [SerializeField] private GameObject _militaryTowerPrefab;
         [SerializeField] private GameObject _powerPlantPrefab;
+        [SerializeField] private Transform _buildingsParent;
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -43,7 +44,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
                 default:
                     return null;
             }
-
+            return Instantiate(desiredPrefab,Vector3.zero,Quaternion.identity, _buildingsParent);
         }
     }
 }

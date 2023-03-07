@@ -249,6 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _buildingType: Armory
+  myButton: {fileID: 1329265344826071532}
 --- !u!114 &1329265344826071532
 MonoBehaviour:
   m_ObjectHideFlags: 0
