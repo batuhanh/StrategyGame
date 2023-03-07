@@ -13,11 +13,13 @@ namespace StrategyGame.MVC.Views
         public GameObject CellPrefab { get { return cellPrefab; } }
         public Transform RowsParent { get { return rowsParent; } }
         public Context Context { get { return _context; } }
+        public Renderer GridBgRenderer { get { return gridBgRenderer; } }
         private bool _isInitialized = false;
         private Context _context;
         [SerializeField] private GameObject rowPrefab;
         [SerializeField] private GameObject cellPrefab;
         [SerializeField] private Transform rowsParent;
+        [SerializeField] private Renderer gridBgRenderer;
         public void Initialize(Context context)
         {
             if (!IsInitialized)

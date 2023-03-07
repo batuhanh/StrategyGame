@@ -13,7 +13,7 @@ namespace StrategyGame.MVC.Models
 
         private readonly int _columnCount = 50;
         private readonly int _rowCount = 50;
-        private readonly float _cellSpacing = 0.40f;
+        private readonly float _cellSpacing = 0.35f;
 
 
         public override void Initialize(Context context)
