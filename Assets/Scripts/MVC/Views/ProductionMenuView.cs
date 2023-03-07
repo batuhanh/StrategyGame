@@ -13,6 +13,7 @@ namespace StrategyGame.MVC.Views
         private bool _isInitialized = false;
         private Context _context;
         [SerializeField] private InfiniteScrollView _infiniteScrollView;
+        [SerializeField] private GameObject[] _menuItemPrefabs;
         public void Initialize(Context context)
         {
             if (!IsInitialized)
@@ -20,8 +21,8 @@ namespace StrategyGame.MVC.Views
                 _isInitialized = true;
                 _context = context;
 
-                //Context.CommandManager.AddCommandListener<InputCommand>(
-                  //  OnInputCommand);
+                _infiniteScrollView.Initialize(_menuItemPrefabs);
+                //Context.CommandManager.AddCommandListener<InputCommand>(OnInputCommand);
             }
         }
     }

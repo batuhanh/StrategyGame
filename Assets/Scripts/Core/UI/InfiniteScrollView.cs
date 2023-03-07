@@ -18,17 +18,13 @@ namespace StrategyGame.Core.UI
         private List<RectTransform> menuItems = new List<RectTransform>();
         private Vector2 _newPos = Vector2.zero;
         [SerializeField] private float _treshold;
-        [SerializeField] private GameObject[] _prefabs;
+        //[SerializeField] private GameObject[] _prefabs;
         [SerializeField] private Transform _disabledPoolParent;
         private int _itemCount = 20;
         private int _columnCount = 0;
         private float _offset = 0;
         private ScrolMenuItemPool _scrollMenuItemPool;
-        void Awake()
-        {
-            Initialize();
-        }
-        public void Initialize()
+        public void Initialize(GameObject[] _prefabs)
         {
             if (!_isInitialized)
             {

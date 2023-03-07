@@ -1,4 +1,4 @@
-using StrategyGame.Managers;
+using StrategyGame.Core.Managers;
 using StrategyGame.Utils;
 using System.Collections;
 using System.Collections.Generic;
