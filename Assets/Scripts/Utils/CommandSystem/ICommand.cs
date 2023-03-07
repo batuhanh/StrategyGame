@@ -8,6 +8,6 @@ namespace StrategyGame.Utils.CommandSystem
 {
     public interface ICommand
     {
-        bool Execute(Context contest);
+        bool Execute(Context context);
     }
 }

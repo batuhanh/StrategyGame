@@ -7,12 +7,14 @@ namespace StrategyGame.MVC.Models
 {
     public class GameGridModel : BaseModel
     {
-        public Observable<int> columnCount { get { return _columnCount; } }
-        public Observable<int> rowCount { get { return _rowCount; } }
+        public int ColumnCount { get { return _columnCount; } }
+        public int RowCount { get { return _rowCount; } }
+        public float CellSpacing { get { return _cellSpacing; } }
 
-        private readonly Observable<int> _columnCount = new Observable<int>();
-        private readonly Observable<int> _rowCount = new Observable<int>();
-        
+        private readonly int _columnCount = 50;
+        private readonly int _rowCount = 50;
+        private readonly float _cellSpacing = 0.40f;
+
 
         public override void Initialize(Context context)
         {
