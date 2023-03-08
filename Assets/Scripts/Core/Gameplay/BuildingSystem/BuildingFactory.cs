@@ -1,3 +1,4 @@
+using StrategyGame.MVC;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -44,7 +45,8 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
                 default:
                     return null;
             }
-            return Instantiate(desiredPrefab,Vector3.zero,Quaternion.identity, _buildingsParent);
+            Vector3 position = GameGrid.Instance.GameGridController.SnapCoordinateToGrid(Vector3.zero);
+            return Instantiate(desiredPrefab, position, Quaternion.identity, _buildingsParent);
         }
     }
 }

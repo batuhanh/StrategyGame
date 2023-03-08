@@ -1,25 +1,31 @@
+using StrategyGame.Core.Gameplay.BuildingSystem;
 using StrategyGame.MVC.Models;
 using StrategyGame.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace StrategyGame.MVC.Views
 {
     public class GameGridView : MonoBehaviour
     {
         public bool IsInitialized { get { return _isInitialized; } }
-        public GameObject RowPrefab { get { return rowPrefab; } }
-        public GameObject CellPrefab { get { return cellPrefab; } }
-        public Transform RowsParent { get { return rowsParent; } }
         public Context Context { get { return _context; } }
-        public Renderer GridBgRenderer { get { return gridBgRenderer; } }
+        public Renderer GridBgRenderer { get { return _gridBgRenderer; } }
+        public GridLayout GridLayout { get { return _gridLayout; } }
+        public Grid Grid { get { return _grid; } }
+        public Tilemap TileMap { get { return _tileMap; } }
+        public TileBase BuildingTile { get { return _buildingTile; } }
         private bool _isInitialized = false;
         private Context _context;
-        [SerializeField] private GameObject rowPrefab;
-        [SerializeField] private GameObject cellPrefab;
-        [SerializeField] private Transform rowsParent;
-        [SerializeField] private Renderer gridBgRenderer;
+        [SerializeField] private Renderer _gridBgRenderer;
+        [SerializeField] private GridLayout _gridLayout;
+        [SerializeField] private Grid _grid;
+        [SerializeField] private Tilemap _tileMap;
+        [SerializeField] private TileBase _buildingTile;
+
+        public Building objToPlace;
         public void Initialize(Context context)
         {
             if (!IsInitialized)
@@ -28,5 +34,10 @@ namespace StrategyGame.MVC.Views
                 _context = context;
             }
         }
+        public void Update()
+        {
+            GameGrid.Instance.GameGridController.CheckHoldedObject();
+        }
+
     }
 }

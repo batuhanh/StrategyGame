@@ -1,4 +1,5 @@
 using StrategyGame.Core.Gameplay.BuildingSystem;
+using StrategyGame.Core.Managers;
 using StrategyGame.MVC.Models;
 using StrategyGame.MVC.Views;
 using StrategyGame.Utils;
@@ -7,12 +8,15 @@ using System.Collections.Generic;
 using Unity.VisualScripting.FullSerializer;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Tilemaps;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 namespace StrategyGame.MVC.Controllers
 {
     public class GameGridController : BaseController<GameGridModel, GameGridView>
     {
-
+        private Vector3 offset;
         public GameGridController(GameGridModel model, GameGridView view) : base(model, view)
         {
 
@@ -22,49 +26,87 @@ namespace StrategyGame.MVC.Controllers
             if (!IsInitialized)
             {
                 base.Initialize(context);
-                Context.CommandManager.AddCommandListener<GameGridUpdateClickedCommand>(CreateRows);
             }
         }
-        public bool SnapToGrid()
+        public void UpdatOffset(Vector3 pos)
+        {
+            offset = pos - GetMouseWorldPosition();
+        }
+        public void CheckHoldedObject()
         {
 
+            if (_view.objToPlace && !EventSystem.current.IsPointerOverGameObject())
+            {
+                Vector3 pos = Camera.main.ScreenToWorldPoint(InputManager.Instance.MousePostition) + offset;
+                _view.objToPlace.gameObject.transform.position = SnapCoordinateToGrid(pos);
+                if (InputManager.Instance.CurrentMouseState == MouseState.Up)
+                {
+                    _view.objToPlace.GetColliderVertexPositionsLocal();
+                    _view.objToPlace.CalculateSizeInCells();
+                    if (CanBePlaced(_view.objToPlace))
+                    {
+                        Building objToPlace = _view.objToPlace;
+                        objToPlace.Place();
+                        Vector3Int start = _view.GridLayout.WorldToCell(objToPlace.GetStartPosition());
+                        TakeArea(start, objToPlace.Size);
+                        _view.objToPlace = null;
+                    }
+                }
+            }
+        }
+        public static Vector3 GetMouseWorldPosition()
+        {
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (hit.collider != null)
+            {
+                return hit.point;
+            }
+            else
+            {
+                return Vector3.zero;
+            }
+        }
+        public Vector3 SnapCoordinateToGrid(Vector3 position)
+        {
+            Vector3Int cellPos = _view.GridLayout.WorldToCell(position);
+            position = _view.Grid.GetCellCenterWorld(cellPos);
+            return position;
+        }
+
+        private static TileBase[] GetTilesBlock(BoundsInt area, Tilemap tileMap)
+        {
+            TileBase[] tileBases = new TileBase[area.size.x * area.size.y * area.size.z];
+            int counter = 0;
+            foreach (var v in area.allPositionsWithin)
+            {
+                Vector3Int pos = new Vector3Int(v.x, v.y, 0);
+                tileBases[counter] = tileMap.GetTile(pos);
+                counter++;
+            }
+            return tileBases;
+        }
+        public bool CanBePlaced(Building building)
+        {
+            BoundsInt area = new BoundsInt();
+            area.position = _view.GridLayout.WorldToCell(_view.objToPlace.GetStartPosition());
+            area.size = _view.objToPlace.Size;
+
+            TileBase[] baseArray = GetTilesBlock(area, _view.TileMap);
+
+            foreach (var b in baseArray)
+            {
+                if (b == _view.BuildingTile)
+                {
+                    return false;
+                }
+            }
             return true;
         }
-        public Vector3 CheckBuildingPosSnapable(Building building, Vector3 offset)
+        public void TakeArea(Vector3Int start, Vector3Int size)
         {
-            float remainderX = (building.Blocks[0].transform.position + offset).x % (_model.CellSpacing / 2f);
-            float remainderY = (building.Blocks[0].transform.position + offset).y % (_model.CellSpacing / 2f);
-            Vector3 diff = new Vector3(remainderX,remainderY,0);
-            float threshold = 0.1f;
-            for (int i = 0; i < building.Blocks.Length; i++)
-            {
-                remainderX = (building.Blocks[i].transform.position + offset).x % (_model.CellSpacing / 2f);
-                remainderY = (building.Blocks[i].transform.position + offset).y % (_model.CellSpacing / 2f);
-                if ((remainderX > threshold || remainderX < (_model.CellSpacing / 2f) - threshold) &&
-                    (remainderY > threshold || remainderY < (_model.CellSpacing / 2f) - threshold))
-                {
-                    return Vector3.zero;
-                }
-            }
-            return diff;
+            _view.TileMap.BoxFill(start, _view.BuildingTile, start.x, start.y, start.x + size.x, start.y + size.y);
+
         }
-        public void CreateRows(GameGridUpdateClickedCommand gameGridUpdateClickedCommand)
-        {
-            float cellSize = 0.35f;
-            Vector3 startCornerPos = new Vector3((-(_model.ColumnCount * _model.CellSpacing) / 2f) - (_model.CellSpacing - cellSize)
-                , ((_model.RowCount * _model.CellSpacing) / 2f) - (_model.CellSpacing - cellSize), 0);
-            for (int i = 0; i < _model.ColumnCount; i++)
-            {
-                GameObject row = PrefabUtility.InstantiatePrefab(_view.RowPrefab, _view.RowsParent) as GameObject;
-                for (int j = 0; j < _model.RowCount; j++)
-                {
-                    Vector3 spawnLocalPos = new Vector3(j * _model.CellSpacing, 0, 0);
-                    GameObject cell = PrefabUtility.InstantiatePrefab(_view.CellPrefab, row.transform) as GameObject;
-                    cell.transform.SetParent(row.transform);
-                    cell.transform.localPosition = spawnLocalPos;
-                }
-                row.transform.localPosition = startCornerPos + new Vector3(0, -i * _model.CellSpacing, 0);
-            }
-        }
+
     }
 }
