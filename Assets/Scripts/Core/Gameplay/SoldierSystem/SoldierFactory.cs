@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+using StrategyGame.Core.Gameplay.SoldierSystem;
 using StrategyGame.MVC;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +27,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
                 Instance = this;
             }
         }
-        public GameObject GetSoldier(string soldierTypeStr)
+        public GameObject GetSoldier(Barrack currentBarrack,string soldierTypeStr)
         {
             GameObject desiredPrefab;
             switch (soldierTypeStr)
@@ -42,8 +44,11 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
                 default:
                     return null;
             }
-            Vector3 spawnPos = new Vector3();
-            return Instantiate(desiredPrefab, spawnPos, Quaternion.identity, _soldiersParent);
+            GameObject spawnedSoldier = Instantiate(desiredPrefab, _soldiersParent);
+            Vector3 spawnPos = GameGrid.Instance.GameGridController.PutSoldierToClosest(
+                spawnedSoldier.GetComponent<Soldier>(), currentBarrack.GetStartPosition());
+            spawnedSoldier.transform.position = spawnPos;
+            return spawnedSoldier;
         }
     }
 }

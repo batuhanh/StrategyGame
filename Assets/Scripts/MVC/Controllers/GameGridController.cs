@@ -1,15 +1,20 @@
 using StrategyGame.Core.Gameplay.BuildingSystem;
+using StrategyGame.Core.Gameplay.SoldierSystem;
 using StrategyGame.Core.Managers;
 using StrategyGame.MVC.Models;
 using StrategyGame.MVC.Views;
 using StrategyGame.Utils;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
+using static UnityEditor.PlayerSettings;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
 namespace StrategyGame.MVC.Controllers
@@ -38,7 +43,15 @@ namespace StrategyGame.MVC.Controllers
             if (_view.objToPlace && !EventSystem.current.IsPointerOverGameObject())
             {
                 Vector3 pos = Camera.main.ScreenToWorldPoint(InputManager.Instance.MousePostition) + offset;
-                _view.objToPlace.transform.position = (_view.objToPlace.transform.position- _view.objToPlace.GetStartPosition()) +SnapCoordinateToGrid(pos);
+                _view.objToPlace.transform.position = (_view.objToPlace.transform.position - _view.objToPlace.GetStartPosition()) + SnapCoordinateToGrid(pos);
+                if (CanBePlaced(_view.objToPlace))
+                {
+                    _view.objToPlace.SetColor(UnityEngine.Color.white);
+                }
+                else
+                {
+                    _view.objToPlace.SetColor(UnityEngine.Color.red);
+                }
                 if (InputManager.Instance.CurrentMouseState == MouseState.Up)
                 {
                     _view.objToPlace.GetColliderVertexPositionsLocal();
@@ -48,7 +61,7 @@ namespace StrategyGame.MVC.Controllers
                         Building objToPlace = _view.objToPlace;
                         objToPlace.Place();
                         Vector3Int start = _view.GridLayout.WorldToCell(objToPlace.GetStartPosition());
-                        TakeArea(start, objToPlace.Size);
+                        TakeArea(start, objToPlace.Size, _view.BuildingTile);
                         _view.objToPlace = null;
                     }
                 }
@@ -85,6 +98,77 @@ namespace StrategyGame.MVC.Controllers
             }
             return tileBases;
         }
+        public Vector3 PutSoldierToClosest(Soldier soldier, Vector3 startPos)
+        {
+            Vector3Int closestCell = FindClosestAvailableCell(startPos);
+            TakeArea(closestCell, new Vector3Int(0, 0, 0), _view.SoldierTile);
+            return _view.Grid.GetCellCenterWorld(closestCell);
+        }
+        private Vector3Int FindClosestAvailableCell(Vector3 startPos)
+        {
+            int size = 4;
+            int searchCount = 50;
+            int currentSearch = 0;
+            Vector3 curPos = startPos;
+            while (currentSearch < searchCount)
+            {
+                curPos += new Vector3(-_view.GridLayout.cellSize.x, -_view.GridLayout.cellSize.y, 0);
+                Vector3Int leftDownCornerIndex = _view.GridLayout.WorldToCell(curPos);
+                TileBase currentTile = _view.TileMap.GetTile(leftDownCornerIndex);
+
+                Vector3Int curIndex = leftDownCornerIndex;
+                currentTile = _view.TileMap.GetTile(curIndex);
+                for (int i = 0; i < size + 1; i++)
+                {
+                    if (currentTile == _view.EmptyTile)
+                    {
+                        return curIndex;
+                    }
+                    
+                    curPos += new Vector3(0,_view.GridLayout.cellSize.y, 0);
+                    curIndex = _view.GridLayout.WorldToCell(curPos);
+                    currentTile = _view.TileMap.GetTile(curIndex);
+                    Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.yellow, 100f);
+                }
+                for (int i = 0; i < size + 1; i++)
+                {
+                    if (currentTile == _view.EmptyTile)
+                    {
+                        return curIndex;
+                    }
+                    curPos += new Vector3(_view.GridLayout.cellSize.x, 0, 0);
+                    curIndex = _view.GridLayout.WorldToCell(curPos);
+                    currentTile = _view.TileMap.GetTile(curIndex);
+                    Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.red, 100f);
+                }
+                for (int i = 0; i < size + 1; i++)
+                {
+                    if (currentTile == _view.EmptyTile)
+                    {
+                        return curIndex;
+                    }
+                    curPos -= new Vector3(0, _view.GridLayout.cellSize.y, 0);
+                    curIndex = _view.GridLayout.WorldToCell(curPos);
+                    currentTile = _view.TileMap.GetTile(curIndex);
+                    Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.blue, 100f);
+                }
+                for (int i = 0; i < size + 1; i++)
+                {
+                    if (currentTile == _view.EmptyTile)
+                    {
+                        return curIndex;
+                    }
+                    curPos -= new Vector3( _view.GridLayout.cellSize.x, 0, 0);
+                    curIndex = _view.GridLayout.WorldToCell(curPos);
+                    currentTile = _view.TileMap.GetTile(curIndex);
+                    Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.green, 100f);
+                }
+                size += 2;
+                currentSearch++;
+            }
+
+            return new Vector3Int();
+        }
         public bool CanBePlaced(Building building)
         {
             BoundsInt area = new BoundsInt();
@@ -102,9 +186,9 @@ namespace StrategyGame.MVC.Controllers
             }
             return true;
         }
-        public void TakeArea(Vector3Int start, Vector3Int size)
+        public void TakeArea(Vector3Int start, Vector3Int size, TileBase tileType)
         {
-            _view.TileMap.BoxFill(start, _view.BuildingTile, start.x, start.y, start.x + size.x, start.y + size.y);
+            _view.TileMap.BoxFill(start, tileType, start.x, start.y, start.x + size.x, start.y + size.y);
 
         }
 

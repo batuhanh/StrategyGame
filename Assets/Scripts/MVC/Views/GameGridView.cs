@@ -17,6 +17,8 @@ namespace StrategyGame.MVC.Views
         public Grid Grid { get { return _grid; } }
         public Tilemap TileMap { get { return _tileMap; } }
         public TileBase BuildingTile { get { return _buildingTile; } }
+        public TileBase SoldierTile { get { return _soldierTile; } }
+        public TileBase EmptyTile { get { return _emptyTile; } }
         private bool _isInitialized = false;
         private Context _context;
         [SerializeField] private Renderer _gridBgRenderer;
@@ -24,6 +26,8 @@ namespace StrategyGame.MVC.Views
         [SerializeField] private Grid _grid;
         [SerializeField] private Tilemap _tileMap;
         [SerializeField] private TileBase _buildingTile;
+        [SerializeField] private TileBase _soldierTile;
+        [SerializeField] private TileBase _emptyTile;
 
         public Building objToPlace;
         public void Initialize(Context context)

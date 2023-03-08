@@ -23,6 +23,7 @@ namespace StrategyGame.Core.UI
             if (GameGrid.Instance.GameGridView.objToPlace)
                 Destroy(GameGrid.Instance.GameGridView.objToPlace.gameObject);
             GameGrid.Instance.GameGridView.objToPlace = createdBuilding.GetComponent<Building>();
+            GameGrid.Instance.GameGridView.objToPlace.OnHolded();
         }
 
     }

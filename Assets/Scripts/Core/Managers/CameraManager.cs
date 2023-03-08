@@ -26,8 +26,8 @@ namespace StrategyGame.Core.Managers
         }
         private void Update()
         {
-            //if (!_isInitialized)
-                //Initiliaze();
+            if (!_isInitialized)
+                Initiliaze();
 
             if (Input.GetMouseButtonDown(0))
             {

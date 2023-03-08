@@ -26,7 +26,20 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         public void OnMouseDown()
         {
             string desc = "Health: " + StartHealth;
-            InformationPanel.Instance.InformationPanelController.SetInformation(Name, desc, Image, new GameObject[0]);
+            InformationPanel.Instance.InformationPanelController.SetInformation(this, Name, desc, Image, new GameObject[0]);
+        }
+        public override void SetColor(Color newColor)
+        {
+            _spriteRenderer.color = newColor;
+        }
+        public override void OnHolded()
+        {
+            _spriteRenderer.sortingOrder = 2;
+        }
+        public override void Place()
+        {
+            IsPlaced = true;
+            _spriteRenderer.sortingOrder = 0;
         }
     }
 }

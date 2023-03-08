@@ -9,7 +9,10 @@ namespace StrategyGame.Core.UI
 {
     public class SoldierProductUI : MonoBehaviour
     {
+        public Barrack Barrack { get { return _barrack; } set { _barrack = value; } }
+
         [SerializeField] private string _soldierType;
+        [SerializeField] private Barrack _barrack;
         [SerializeField] private Button myButton;
         private void Start()
         {
@@ -17,7 +20,7 @@ namespace StrategyGame.Core.UI
         }
         private void CallFactory()
         {
-            //GameObject createdBuilding = BuildingFactory.Instance.GetBuilding(_buildingType);
+            GameObject createdSoldier = SoldierFactory.Instance.GetSoldier(_barrack, _soldierType);
         }
 
     }
