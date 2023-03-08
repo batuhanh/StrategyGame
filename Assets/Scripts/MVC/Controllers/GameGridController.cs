@@ -128,7 +128,7 @@ namespace StrategyGame.MVC.Controllers
                     curPos += new Vector3(0,_view.GridLayout.cellSize.y, 0);
                     curIndex = _view.GridLayout.WorldToCell(curPos);
                     currentTile = _view.TileMap.GetTile(curIndex);
-                    Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.yellow, 100f);
+                    //Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.yellow, 100f);
                 }
                 for (int i = 0; i < size + 1; i++)
                 {
@@ -139,7 +139,7 @@ namespace StrategyGame.MVC.Controllers
                     curPos += new Vector3(_view.GridLayout.cellSize.x, 0, 0);
                     curIndex = _view.GridLayout.WorldToCell(curPos);
                     currentTile = _view.TileMap.GetTile(curIndex);
-                    Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.red, 100f);
+                    //Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.red, 100f);
                 }
                 for (int i = 0; i < size + 1; i++)
                 {
@@ -150,7 +150,7 @@ namespace StrategyGame.MVC.Controllers
                     curPos -= new Vector3(0, _view.GridLayout.cellSize.y, 0);
                     curIndex = _view.GridLayout.WorldToCell(curPos);
                     currentTile = _view.TileMap.GetTile(curIndex);
-                    Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.blue, 100f);
+                    //Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.blue, 100f);
                 }
                 for (int i = 0; i < size + 1; i++)
                 {
@@ -161,7 +161,7 @@ namespace StrategyGame.MVC.Controllers
                     curPos -= new Vector3( _view.GridLayout.cellSize.x, 0, 0);
                     curIndex = _view.GridLayout.WorldToCell(curPos);
                     currentTile = _view.TileMap.GetTile(curIndex);
-                    Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.green, 100f);
+                    //Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.green, 100f);
                 }
                 size += 2;
                 currentSearch++;
@@ -179,7 +179,7 @@ namespace StrategyGame.MVC.Controllers
 
             foreach (var b in baseArray)
             {
-                if (b == _view.BuildingTile)
+                if (b != _view.EmptyTile)
                 {
                     return false;
                 }
