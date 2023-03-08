@@ -27,8 +27,8 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         public virtual void Place()
         {
             IsPlaced = true;
-
         }
+
         public void GetColliderVertexPositionsLocal()
         {
             BoxCollider2D b = GetComponent<BoxCollider2D>();
@@ -46,7 +46,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
             for (int i = 0; i < verts.Length; i++)
             {
                 Vector3 worldPos = transform.TransformPoint(vertices[i]);
-                Debug.DrawRay(worldPos, worldPos + new Vector3(0, 0, -20),Color.yellow,100f);
+                Debug.DrawRay(worldPos, worldPos + new Vector3(0, 0, -20), Color.yellow, 100f);
                 verts[i] = GameGrid.Instance.GameGridView.GridLayout.WorldToCell(worldPos);
             }
             Size = new Vector3Int(Mathf.Abs((verts[0] - verts[1]).x),

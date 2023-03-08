@@ -38,7 +38,7 @@ namespace StrategyGame.MVC.Controllers
             if (_view.objToPlace && !EventSystem.current.IsPointerOverGameObject())
             {
                 Vector3 pos = Camera.main.ScreenToWorldPoint(InputManager.Instance.MousePostition) + offset;
-                _view.objToPlace.gameObject.transform.position = SnapCoordinateToGrid(pos);
+                _view.objToPlace.transform.position = (_view.objToPlace.transform.position- _view.objToPlace.GetStartPosition()) +SnapCoordinateToGrid(pos);
                 if (InputManager.Instance.CurrentMouseState == MouseState.Up)
                 {
                     _view.objToPlace.GetColliderVertexPositionsLocal();

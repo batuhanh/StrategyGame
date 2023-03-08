@@ -14,12 +14,14 @@ namespace StrategyGame.Core.UI
         [SerializeField] private Button myButton;
         private void Start()
         {
-           myButton.onClick.AddListener(CallFactory);
+            myButton.onClick.AddListener(CallFactory);
         }
         private void CallFactory()
         {
             GameObject createdBuilding = BuildingFactory.Instance.GetBuilding(_buildingType);
             GameGrid.Instance.GameGridController.UpdatOffset(createdBuilding.transform.position);
+            if (GameGrid.Instance.GameGridView.objToPlace)
+                Destroy(GameGrid.Instance.GameGridView.objToPlace.gameObject);
             GameGrid.Instance.GameGridView.objToPlace = createdBuilding.GetComponent<Building>();
         }
 
