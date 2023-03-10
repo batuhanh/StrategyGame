@@ -1,8 +1,11 @@
+using StrategyGame.Core.Gameplay.PathFinding;
 using StrategyGame.MVC;
+using StrategyGame.MVC.Controllers;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
@@ -40,17 +43,26 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
                 if (attackTimer > attackDelay)
                 {
                     attackTimer = 0f;
-                    Attack(_target);
+                    if (_target == null)
+                    {
+                        _state = SoldierState.Idle;
+                    }
+                    else
+                    {
+                        Attack(_target);
+                    }
+
                 }
             }
         }
         public override void CallInformationPanel()
         {
-            string desc = "Health: " + StartHealth + "\n" + " Attack Power: " + AttackPower;
+            string desc = "Health: " + CurrentHealth + "\n" + " Attack Power: " + AttackPower;
             InformationPanel.Instance.InformationPanelController.SetInformation(this, Name, desc, Image, new GameObject[0]);
         }
         public override void DecideMovement(Vector3 target)
         {
+            _target = null;
             Move(target);
         }
         public override void DecideMovement(IDamageable target)
@@ -60,13 +72,19 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
         }
         public override void Move(Vector3 target)
         {
-            Debug.Log("Move");
-            GameGrid.Instance.GameGridController.ChangeGridTileState(transform.position, GameGrid.Instance.GameGridView.EmptyTile);
+            GameGrid.Instance.GameGridController.ChangeGridTileState(transform.position, Vector3Int.zero, GameGrid.Instance.GameGridView.EmptyTile);
             Vector3Int cellPos = GameGrid.Instance.GameGridView.GridLayout.WorldToCell(target);
             Vector3 actTarget = GameGrid.Instance.GameGridView.Grid.GetCellCenterWorld(cellPos);
             State = SoldierState.Moving;
-           
-            Vector3[] _path = new Vector3[] { actTarget };//pathfindg ile doldur bu pathi
+
+            PathFinder.Instance.FindPath(GetObjectPos(), actTarget);
+            List<WorldTile> tilePath = PathFinder.Instance.lastPath;
+            Vector3[] _path = new Vector3[tilePath.Count];
+            for (int i = 0; i < tilePath.Count; i++)
+            {
+                Vector3 worldPos = GameGrid.Instance.GameGridView.GridLayout.CellToWorld(tilePath[i].GetGridPos());
+                _path[i] = worldPos;
+            }
             StartCoroutine(MoveCaroutine(_path));
         }
         public override void Attack(IDamageable target)
@@ -90,7 +108,8 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
         }
         private void Dead()
         {
-            GameGrid.Instance.GameGridController.ChangeGridTileState(transform.position, GameGrid.Instance.GameGridView.EmptyTile);
+            GameGrid.Instance.GameGridController.ChangeGridTileState(transform.position, Vector3Int.zero, GameGrid.Instance.GameGridView.EmptyTile);
+            BattleHandler.Instance.InvokeItemDestroyed(this);
             Destroy(gameObject);
         }
         private void CheckForAttack()
@@ -99,27 +118,60 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
             {
                 State = SoldierState.Attacking;
             }
+            else
+            {
+                State = SoldierState.Idle;
+            }
 
         }
         private IEnumerator MoveCaroutine(Vector3[] path)
         {
             float moveSpeed = 10f;
+            Vector3 cellSize = new Vector3(0.4f, 0.4f, 0.4f);
             for (int i = 0; i < path.Length; i++)
             {
-                Vector3 direction = (path[i] - transform.position).normalized;
+                TileBase curTileBase = GameGrid.Instance.GameGridController.GetTileBase(path[i]);
+                if (curTileBase == GameGrid.Instance.GameGridView.BuildingTile)//Checeking is target tile is not avaialble
+                {
+                    break;
+                }
+                else if (curTileBase == GameGrid.Instance.GameGridView.SoldierTile && i == path.Length-1)
+                {
+                    break;
+                }
+                Vector3 direction = ((path[i] + cellSize / 2f) - transform.position).normalized;
                 while (true)
                 {
                     transform.position += direction * moveSpeed * Time.deltaTime;
-                    if (Vector3.Distance(transform.position, path[i]) < 0.05f)
+                    if (Vector3.Distance(transform.position, (path[i] + cellSize / 2f)) < 0.05f)
                     {
-                        transform.position = path[i];
+                        transform.position = (path[i] + cellSize / 2f);
                         break;
                     }
                     yield return null;
                 }
             }
-            GameGrid.Instance.GameGridController.ChangeGridTileState(transform.position,GameGrid.Instance.GameGridView.SoldierTile);
+            GameGrid.Instance.GameGridController.ChangeGridTileState(transform.position, Vector3Int.zero, GameGrid.Instance.GameGridView.SoldierTile);
             CheckForAttack();
+        }
+        private void CheckMyTarget(IDamageable destroyedTarget)
+        {
+            if (_target == destroyedTarget)
+            {
+               
+                _state = SoldierState.Idle;
+                _target = null;
+            }
+        }
+        private void OnEnable()
+        {
+            BattleHandler.ItemDestroyed += CheckMyTarget;
+            BattleHandler.SoldierStartedMove += CheckMyTarget;
+        }
+        private void OnDisable()
+        {
+            BattleHandler.ItemDestroyed -= CheckMyTarget;
+            BattleHandler.SoldierStartedMove -= CheckMyTarget;
         }
     }
 }

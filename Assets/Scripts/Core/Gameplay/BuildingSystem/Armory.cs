@@ -1,8 +1,10 @@
+using StrategyGame.Core.Gameplay.SoldierSystem;
 using StrategyGame.MVC;
 using StrategyGame.MVC.Models;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 namespace StrategyGame.Core.Gameplay.BuildingSystem
 {
@@ -27,8 +29,8 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         [SerializeField] private SpriteRenderer _spriteRenderer;
         public override void CallInformationPanel()
         {
-            string desc = "Health: " + StartHealth;
-            InformationPanel.Instance.InformationPanelController.SetInformation(this,Name, desc, Image,new GameObject[0]);
+            string desc = "Health: " + CurrentHealth;
+            InformationPanel.Instance.InformationPanelController.SetInformation(this, Name, desc, Image, new GameObject[0]);
         }
         public override void SetColor(Color newColor)
         {
@@ -45,7 +47,17 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         }
         public override void TakeDamage(int amount)
         {
-
+            _currentHealth -= amount;
+            if (_currentHealth <= 0)
+            {
+                Dead();
+            }
+        }
+        private void Dead()
+        {
+            GameGrid.Instance.GameGridController.ChangeGridTileState(GetStartPosition(), Size, GameGrid.Instance.GameGridView.EmptyTile);
+            BattleHandler.Instance.InvokeItemDestroyed(this);
+            Destroy(gameObject);
         }
     }
 }

@@ -1,6 +1,8 @@
 using StrategyGame.Core.Gameplay.BuildingSystem;
+using StrategyGame.Core.Gameplay.PathFinding;
 using StrategyGame.Core.Managers;
 using StrategyGame.MVC;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -17,6 +19,20 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
         [SerializeField] private Soldier leftClickedSoldier;
         [SerializeField] private IDamageable rightClickedTarget;
         [SerializeField] private LayerMask clickableLayer;
+        public static event Action<IDamageable> ItemDestroyed;
+        public static event Action<IDamageable> SoldierStartedMove;
+        public static BattleHandler Instance { get; private set; }
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                Instance = this;
+            }
+        }
 
         private void Update()
         {
@@ -35,17 +51,14 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
         {
             if (mouseIndex == 0)
             {
-                Debug.Log("Left clciked");
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 1000f, clickableLayer);
                 if (hit.collider != null)
                 {
-                    Debug.Log("clickable found");
                     leftClickedItem = hit.collider.GetComponent<IClickable>();
                     leftClickedSoldier = hit.collider.GetComponent<Soldier>();
                     var temp = hit.collider.GetComponent<IShowable>();
                     if (temp != null)
                     {
-                        Debug.Log("showable found");
                         temp.CallInformationPanel();
                     }
                 }
@@ -58,41 +71,34 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
             }
             else if (mouseIndex == 1)
             {
-                Debug.Log("Right clicked ");
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 1000f);
                 if (hit.collider != null)
                 {
-                    Debug.Log("hitted");
                     rightClickedItem = hit.collider.GetComponent<IClickable>();
                     rightClickedTarget = hit.collider.GetComponent<IDamageable>();
-                    if (leftClickedSoldier != null && rightClickedTarget != null)
+                    if (leftClickedSoldier != null && rightClickedTarget != null && leftClickedSoldier != rightClickedTarget as Soldier)
                     {
-                        Debug.Log("Attack move started");
+                        
                         leftClickedSoldier.DecideMovement(rightClickedTarget);
+                        SoldierStartedMove?.Invoke(leftClickedSoldier as IDamageable);
                     }
-                   
                 }
                 else if (GameGrid.Instance.GameGridController.IsPosOnGrid(Camera.main.ScreenToWorldPoint(mousePosition)))
                 {
-                    Debug.Log("Grid clciked");
                     TileBase clickedTile = GameGrid.Instance.GameGridController.GetTileBase(Camera.main.ScreenToWorldPoint(mousePosition));
-                    Debug.Log(leftClickedSoldier + " " + clickedTile);
                     if (leftClickedSoldier != null && clickedTile == GameGrid.Instance.GameGridView.EmptyTile)
                     {
-                        Debug.Log("Normal move started");
+                       
                         leftClickedSoldier.DecideMovement(Camera.main.ScreenToWorldPoint(mousePosition));
+                        SoldierStartedMove?.Invoke(leftClickedSoldier as IDamageable);
                     }
-                   
                 }
                 else
                 {
                    
                 }
                 Clear();
-
             }
-            
-
         }
         private void Clear()
         {
@@ -100,6 +106,10 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
             rightClickedItem = null;
             leftClickedSoldier = null;
             rightClickedTarget = null;
+        }
+        public void InvokeItemDestroyed(IDamageable target)
+        {
+            ItemDestroyed?.Invoke(target);
         }
         private void OnEnable()
         {

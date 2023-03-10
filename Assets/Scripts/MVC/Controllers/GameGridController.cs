@@ -112,17 +112,17 @@ namespace StrategyGame.MVC.Controllers
         public Vector3 PutSoldierToClosest(Soldier soldier, Vector3 position)
         {
             Vector3Int closestCell = FindClosestAvailableCell(position);
-            ChangeGridTileState(closestCell, _view.SoldierTile);
+            ChangeGridTileState(closestCell, new Vector3Int(0, 0, 0), _view.SoldierTile);
             return _view.Grid.GetCellCenterWorld(closestCell);
         }
-        public void ChangeGridTileState(Vector3 worldPos,TileBase tiletype)
+        public void ChangeGridTileState(Vector3 worldPos, Vector3Int size, TileBase tiletype)
         {
             Vector3Int cellPos = _view.GridLayout.WorldToCell(worldPos);
-            TakeArea(cellPos, new Vector3Int(0, 0, 0), tiletype);
+            TakeArea(cellPos, size, tiletype);
         }
-        public void ChangeGridTileState(Vector3Int cellPos, TileBase tiletype)
+        public void ChangeGridTileState(Vector3Int cellPos, Vector3Int size, TileBase tiletype)
         {
-            TakeArea(cellPos, new Vector3Int(0, 0, 0), tiletype);
+            TakeArea(cellPos, size, tiletype);
         }
         private Vector3Int FindClosestAvailableCell(Vector3 startPos)
         {

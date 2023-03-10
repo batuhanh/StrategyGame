@@ -1,3 +1,4 @@
+using StrategyGame.Core.Gameplay.SoldierSystem;
 using StrategyGame.MVC;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         [SerializeField] private GameObject[] _productPrefabs;
         public override void CallInformationPanel()
         {
-            string desc = "Health: " + StartHealth;
+            string desc = "Health: " + CurrentHealth;
             InformationPanel.Instance.InformationPanelController.SetInformation(this,Name, desc, Image, _productPrefabs);
         }
         public override void SetColor(Color newColor)
@@ -45,7 +46,17 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         }
         public override void TakeDamage(int amount)
         {
-
+            _currentHealth -= amount;
+            if (_currentHealth <= 0)
+            {
+                Dead();
+            }
+        }
+        private void Dead()
+        {
+            GameGrid.Instance.GameGridController.ChangeGridTileState(GetStartPosition(), Size, GameGrid.Instance.GameGridView.EmptyTile);
+            BattleHandler.Instance.InvokeItemDestroyed(this);
+            Destroy(gameObject);
         }
 
     }
