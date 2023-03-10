@@ -23,7 +23,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         [SerializeField] private Vector2 _gridPosition;
         [SerializeField] private Vector3Int _size;
         [SerializeField] private SpriteRenderer _spriteRenderer;
-        public void OnMouseDown()
+        public override void CallInformationPanel()
         {
             string desc = "Health: " + StartHealth;
             InformationPanel.Instance.InformationPanelController.SetInformation(this, Name, desc, Image, new GameObject[0]);
@@ -40,6 +40,10 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         {
             IsPlaced = true;
             _spriteRenderer.sortingOrder = 0;
+        }
+        public override void TakeDamage(int amount)
+        {
+
         }
     }
 }

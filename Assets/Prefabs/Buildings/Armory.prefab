@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5527423953389097607}
   - component: {fileID: 8040965543387258132}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SpriteRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 3840033895942902752}
   - component: {fileID: 4256078985469333003}
   - component: {fileID: 7179698452898677487}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Armory
   m_TagString: Untagged
   m_Icon: {fileID: 0}

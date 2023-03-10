@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace StrategyGame.Core.Managers
 {
@@ -28,16 +29,19 @@ namespace StrategyGame.Core.Managers
         {
             if (!_isInitialized)
                 Initiliaze();
-
-            if (Input.GetMouseButtonDown(0))
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
-                dragOrigin = cam.ScreenToWorldPoint(Input.mousePosition);
+                if (InputManager.Instance.CurrentMouseState == MouseState.Down)
+                {
+                    dragOrigin = cam.ScreenToWorldPoint(Input.mousePosition);
+                }
+                if (InputManager.Instance.CurrentMouseState == MouseState.Hold)
+                {
+                    Vector3 diff = dragOrigin - cam.ScreenToWorldPoint(Input.mousePosition);
+                    cam.transform.position = ClampCamera(cam.transform.position + diff);
+                }
             }
-            if (Input.GetMouseButton(0))
-            {
-                Vector3 diff = dragOrigin - cam.ScreenToWorldPoint(Input.mousePosition);
-                cam.transform.position = ClampCamera(cam.transform.position + diff);
-            }
+            
         }
         private Vector3 ClampCamera(Vector3 targetPosition)
         {

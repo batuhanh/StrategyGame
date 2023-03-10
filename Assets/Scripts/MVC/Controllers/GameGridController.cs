@@ -39,7 +39,6 @@ namespace StrategyGame.MVC.Controllers
         }
         public void CheckHoldedObject()
         {
-
             if (_view.objToPlace && !EventSystem.current.IsPointerOverGameObject())
             {
                 Vector3 pos = Camera.main.ScreenToWorldPoint(InputManager.Instance.MousePostition) + offset;
@@ -66,6 +65,18 @@ namespace StrategyGame.MVC.Controllers
                     }
                 }
             }
+        }
+        public bool IsPosOnGrid(Vector3 position)
+        {
+            Vector3Int curTilePos = _view.GridLayout.WorldToCell(position);
+            TileBase curTile = _view.TileMap.GetTile(curTilePos);
+
+            return curTile != null;
+        }
+        public TileBase GetTileBase(Vector3 position)
+        {
+            Vector3Int curTilePos = _view.GridLayout.WorldToCell(position);
+            return _view.TileMap.GetTile(curTilePos);
         }
         public static Vector3 GetMouseWorldPosition()
         {
@@ -98,11 +109,20 @@ namespace StrategyGame.MVC.Controllers
             }
             return tileBases;
         }
-        public Vector3 PutSoldierToClosest(Soldier soldier, Vector3 startPos)
+        public Vector3 PutSoldierToClosest(Soldier soldier, Vector3 position)
         {
-            Vector3Int closestCell = FindClosestAvailableCell(startPos);
-            TakeArea(closestCell, new Vector3Int(0, 0, 0), _view.SoldierTile);
+            Vector3Int closestCell = FindClosestAvailableCell(position);
+            ChangeGridTileState(closestCell, _view.SoldierTile);
             return _view.Grid.GetCellCenterWorld(closestCell);
+        }
+        public void ChangeGridTileState(Vector3 worldPos,TileBase tiletype)
+        {
+            Vector3Int cellPos = _view.GridLayout.WorldToCell(worldPos);
+            TakeArea(cellPos, new Vector3Int(0, 0, 0), tiletype);
+        }
+        public void ChangeGridTileState(Vector3Int cellPos, TileBase tiletype)
+        {
+            TakeArea(cellPos, new Vector3Int(0, 0, 0), tiletype);
         }
         private Vector3Int FindClosestAvailableCell(Vector3 startPos)
         {
@@ -124,8 +144,8 @@ namespace StrategyGame.MVC.Controllers
                     {
                         return curIndex;
                     }
-                    
-                    curPos += new Vector3(0,_view.GridLayout.cellSize.y, 0);
+
+                    curPos += new Vector3(0, _view.GridLayout.cellSize.y, 0);
                     curIndex = _view.GridLayout.WorldToCell(curPos);
                     currentTile = _view.TileMap.GetTile(curIndex);
                     //Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.yellow, 100f);
@@ -158,7 +178,7 @@ namespace StrategyGame.MVC.Controllers
                     {
                         return curIndex;
                     }
-                    curPos -= new Vector3( _view.GridLayout.cellSize.x, 0, 0);
+                    curPos -= new Vector3(_view.GridLayout.cellSize.x, 0, 0);
                     curIndex = _view.GridLayout.WorldToCell(curPos);
                     currentTile = _view.TileMap.GetTile(curIndex);
                     //Debug.DrawRay(curPos, curPos + new Vector3(0, 0, -20), UnityEngine.Color.green, 100f);
@@ -169,11 +189,12 @@ namespace StrategyGame.MVC.Controllers
 
             return new Vector3Int();
         }
+      
         public bool CanBePlaced(Building building)
         {
             BoundsInt area = new BoundsInt();
             area.position = _view.GridLayout.WorldToCell(_view.objToPlace.GetStartPosition());
-            area.size = _view.objToPlace.Size;
+            area.size = _view.objToPlace.Size + new Vector3Int(1, 1, 1);
 
             TileBase[] baseArray = GetTilesBlock(area, _view.TileMap);
 

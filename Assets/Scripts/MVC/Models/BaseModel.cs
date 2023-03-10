@@ -23,7 +23,6 @@ namespace StrategyGame.MVC.Models
                 _isInitialized = true;
                 _context = context;
 
-                Context.ModelLocator.AddItem(this);
             }
         }
 

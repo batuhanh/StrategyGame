@@ -25,7 +25,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         [SerializeField] private Vector3Int _size;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private GameObject[] _productPrefabs;
-        public void OnMouseDown()
+        public override void CallInformationPanel()
         {
             string desc = "Health: " + StartHealth;
             InformationPanel.Instance.InformationPanelController.SetInformation(this,Name, desc, Image, _productPrefabs);
@@ -42,6 +42,10 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         {
             IsPlaced = true;
             _spriteRenderer.sortingOrder = 0;
+        }
+        public override void TakeDamage(int amount)
+        {
+
         }
 
     }

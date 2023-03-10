@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5527423953389097607}
   - component: {fileID: 8040965543387258132}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SpriteRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 3840033895942902752}
   - component: {fileID: 7179698452898677487}
   - component: {fileID: 6950815826865319122}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Colonel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,3 +162,5 @@ MonoBehaviour:
   _currentHealth: 10
   _attackPower: 10
   _isPlaced: 0
+  _canMove: 0
+  _state: 0

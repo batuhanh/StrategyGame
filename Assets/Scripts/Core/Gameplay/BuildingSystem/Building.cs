@@ -9,7 +9,7 @@ using UnityEngine;
 namespace StrategyGame.Core.Gameplay.BuildingSystem
 {
 
-    public abstract class Building : MonoBehaviour, IBuilding
+    public abstract class Building : MonoBehaviour, IBuilding, IShowable, IDamageable
     {
         public abstract string Name { get; }
         public abstract Sprite Image { get; }
@@ -20,8 +20,11 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         public abstract Vector3Int Size { get; set; }
         protected Vector3[] vertices;
         public abstract void SetColor(Color newColor);
+        public abstract void TakeDamage(int amount);
         public abstract void OnHolded();
         public abstract void Place();
+        public abstract void CallInformationPanel();
+        
         public void Start()
         {
             GetColliderVertexPositionsLocal();
@@ -36,7 +39,6 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
             vertices[1] = pos + new Vector3(b.size.x, -b.size.y, 0) * 0.5f;
             vertices[2] = pos + new Vector3(-b.size.x, b.size.y, 0) * 0.5f;
             vertices[3] = pos + new Vector3(b.size.x, b.size.y, 0) * 0.5f;
-            Debug.Log("b.offset " + b.offset + " vertices[1] " + vertices[0] + " vertices[2] " + vertices[1] + " vertices[3] " + vertices[2] + " vertices[4] " + vertices[3]);
         }
         public void CalculateSizeInCells()
         {
@@ -57,6 +59,10 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
                 CalculateSizeInCells();
             }
             return transform.TransformPoint(vertices[0]);
+        }
+        public Vector3 GetObjectPos()
+        {
+            return transform.position;
         }
     }
     public interface IBuilding

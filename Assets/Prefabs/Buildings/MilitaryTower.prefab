@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4680672432927974332}
   - component: {fileID: 4680672432927974335}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SpriteRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 4680672433387998635}
   - component: {fileID: 4680672433387998632}
   - component: {fileID: 1582874502056770969}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MilitaryTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -27,8 +27,9 @@ namespace StrategyGame.MVC.Controllers
                 SetInformationNull();
             }
         }
-        public void SetInformation(Building clickedBuilding,string title,string desc,Sprite buildingImg, GameObject[] products)
+        public void SetInformation(IShowable clickedObject,string title,string desc,Sprite buildingImg, GameObject[] products)
         {
+            _model.ClickedObject = clickedObject;
             _view.TitleText.text = title;
             _view.DescText.text = desc;
             if (!_view.Image.gameObject.activeSelf)
@@ -44,7 +45,7 @@ namespace StrategyGame.MVC.Controllers
             for (int i = 0; i < products.Length; i++)
             {
                 GameObject spawnedProduct = GameObject.Instantiate(products[i], _view.ProductsParent);
-                spawnedProduct.GetComponent<SoldierProductUI>().Barrack = clickedBuilding as Barrack;
+                spawnedProduct.GetComponent<SoldierProductUI>().Barrack = clickedObject as Barrack;
             }
         }
         private void SetInformationNull()

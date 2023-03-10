@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6998001438221996667}
   - component: {fileID: 6998001438221996664}
   - component: {fileID: 3091689566338684173}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PowerPlant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6998001439416961790}
   - component: {fileID: 6998001439416961777}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SpriteRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
