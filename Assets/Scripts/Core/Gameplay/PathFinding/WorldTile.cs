@@ -2,9 +2,7 @@ using StrategyGame.MVC;
 using StrategyGame.MVC.Controllers;
 using StrategyGame.MVC.Views;
 using System.Collections.Generic;
-using UnityEditorInternal;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace StrategyGame.Core.Gameplay.PathFinding
 {
@@ -61,7 +59,7 @@ namespace StrategyGame.Core.Gameplay.PathFinding
             {
                 curNeigh = new WorldTile(IsTileWalkable(targetCellPos), targetCellPos.x, targetCellPos.y, targetCellPos.z, false);
             }
-            
+
             myNeighbours.Add(curNeigh);
 
         }

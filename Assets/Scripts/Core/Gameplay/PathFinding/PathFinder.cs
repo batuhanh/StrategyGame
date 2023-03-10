@@ -64,7 +64,6 @@ namespace StrategyGame.Core.Gameplay.PathFinding
                     return;
                 }
 
-                //currentNode.CreateNeighbours();
                 if (currentNode.myNeighbours == null)
                 {
                     currentNode.CreateNeighbours();

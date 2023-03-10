@@ -27,19 +27,7 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
         {
             return transform.position;
         }
-        /*public virtual void OnMouseDown()
-        {
-            CanMove = !CanMove; 
-        }
-        private void CheckForMove(int mouseIndex, Vector3 mousePosition)
-        {
-            if (mouseIndex == 1 && CanMove 
-                && GameGrid.Instance.GameGridController.IsPosOnGrid(Camera.main.ScreenToWorldPoint(mousePosition)))
-            {
-                CanMove = false;
-                Move(Camera.main.ScreenToWorldPoint(mousePosition));
-            }
-        }*/
+      
     }
     public interface ISoldier
     {
