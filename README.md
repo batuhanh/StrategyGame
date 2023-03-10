@@ -1,2 +1,2 @@
 # StrategyGame
-StrategyGame
+Case study for Panteon
