@@ -4,6 +4,7 @@ using StrategyGame.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,7 +35,8 @@ namespace StrategyGame.Core.Managers
         public void SpawnPopUpObject(Vector3 spawnPos,string data)
         {
             GameObject popUp = popUpPool.GetObject();
-            popUp.GetComponentInChildren<Text>().text = data;
+            popUp.transform.position = spawnPos;
+            popUp.GetComponentInChildren<TextMeshPro>().text = data;
             StartCoroutine(PoolDestroyDelay(2f,popUp,popUpPool));
         }
         IEnumerator PoolDestroyDelay(float delayAmount,GameObject obj,ObjectPool pool)

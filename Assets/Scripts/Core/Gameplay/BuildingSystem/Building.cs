@@ -62,7 +62,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         }
         public Vector3 GetObjectPos()
         {
-            return transform.position;
+            return transform.TransformPoint(vertices[0]);
         }
     }
     public interface IBuilding

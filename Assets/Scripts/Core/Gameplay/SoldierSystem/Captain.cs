@@ -1,4 +1,5 @@
 using StrategyGame.Core.Gameplay.PathFinding;
+using StrategyGame.Core.Managers;
 using StrategyGame.MVC;
 using StrategyGame.MVC.Controllers;
 using System.Collections;
@@ -77,13 +78,13 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
             Vector3 actTarget = GameGrid.Instance.GameGridView.Grid.GetCellCenterWorld(cellPos);
             State = SoldierState.Moving;
 
-            PathFinder.Instance.FindPath(GetObjectPos(), actTarget);
+            PathFinder.Instance.FindPath(GetObjectPos(), target);
             List<WorldTile> tilePath = PathFinder.Instance.lastPath;
-            Vector3[] _path = new Vector3[tilePath.Count];
+            List<Vector3> _path = new List<Vector3>();
             for (int i = 0; i < tilePath.Count; i++)
             {
                 Vector3 worldPos = GameGrid.Instance.GameGridView.GridLayout.CellToWorld(tilePath[i].GetGridPos());
-                _path[i] = worldPos;
+                _path.Add(worldPos);
             }
             StartCoroutine(MoveCaroutine(_path));
         }
@@ -91,6 +92,7 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
         {
             if (target != null)
             {
+                EffectsManager.Instance.SpawnPopUpObject(GetObjectPos(), AttackPower.ToString());
                 target.TakeDamage(AttackPower);
             }
         }
@@ -124,18 +126,29 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
             }
 
         }
-        private IEnumerator MoveCaroutine(Vector3[] path)
+        private IEnumerator MoveCaroutine(List<Vector3> path)
         {
             float moveSpeed = 10f;
             Vector3 cellSize = new Vector3(0.4f, 0.4f, 0.4f);
-            for (int i = 0; i < path.Length; i++)
+            for (int i = path.Count - 1; i >= 0; i--)
             {
                 TileBase curTileBase = GameGrid.Instance.GameGridController.GetTileBase(path[i]);
                 if (curTileBase == GameGrid.Instance.GameGridView.BuildingTile)//Checeking is target tile is not avaialble
                 {
+                    Debug.Log("Builidng FÝnd");
+                    path.RemoveAt(i);
+
+                }
+                else
+                {
                     break;
                 }
-                else if (curTileBase == GameGrid.Instance.GameGridView.SoldierTile && i == path.Length - 1)
+            }
+            for (int i = 0; i < path.Count; i++)
+            {
+                TileBase curTileBase = GameGrid.Instance.GameGridController.GetTileBase(path[i]);
+
+                if (curTileBase == GameGrid.Instance.GameGridView.SoldierTile && i == path.Count - 1)
                 {
                     break;
                 }
