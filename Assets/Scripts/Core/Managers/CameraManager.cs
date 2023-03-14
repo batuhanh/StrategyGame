@@ -23,6 +23,7 @@ namespace StrategyGame.Core.Managers
 
             mapMinY = gridRenderer.transform.position.y - (gridRenderer.bounds.size.y / 2f);
             mapMaxY = gridRenderer.transform.position.y + (gridRenderer.bounds.size.y / 2f);
+            dragOrigin = cam.ScreenToWorldPoint(Input.mousePosition);
             _isInitialized = true;
         }
         private void Update()

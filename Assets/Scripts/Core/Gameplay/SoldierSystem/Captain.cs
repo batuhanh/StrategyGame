@@ -135,7 +135,6 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
                 TileBase curTileBase = GameGrid.Instance.GameGridController.GetTileBase(path[i]);
                 if (curTileBase == GameGrid.Instance.GameGridView.BuildingTile)//Checeking is target tile is not avaialble
                 {
-                    Debug.Log("Builidng FÝnd");
                     path.RemoveAt(i);
 
                 }
