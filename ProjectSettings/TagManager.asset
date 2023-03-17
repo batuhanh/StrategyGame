@@ -50,3 +50,6 @@ TagManager:
   - name: Soldiers
     uniqueID: 1477767265
     locked: 0
+  - name: Effects
+    uniqueID: 3388780299
+    locked: 0
