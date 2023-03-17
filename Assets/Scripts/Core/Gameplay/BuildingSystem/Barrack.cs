@@ -26,6 +26,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         [SerializeField] private Vector2 _gridPosition;
         [SerializeField] private Vector3Int _size;
         [SerializeField] private SpriteRenderer _spriteRenderer;
+        [SerializeField] private BoxCollider2D _boxCollider2D;
         [SerializeField] private GameObject[] _productPrefabs;
 
         public static event Action<IShowable> barrackDestroyedEvent;
@@ -46,6 +47,9 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         {
             IsPlaced = true;
             _spriteRenderer.sortingOrder = 0;
+            Vector3 blockSize = GameGrid.Instance.GameGridView.Grid.cellSize;
+            _boxCollider2D.size = new Vector2(_boxCollider2D.size.x + blockSize.x,
+                _boxCollider2D.size.y + blockSize.y);
         }
         public override void TakeDamage(int amount)
         {

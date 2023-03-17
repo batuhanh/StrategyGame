@@ -54,6 +54,7 @@ MonoBehaviour:
   _gridPosition: {x: 0, y: 0}
   _size: {x: 2, y: 3, z: 0}
   _spriteRenderer: {fileID: 6998001439416961777}
+  _boxCollider2D: {fileID: 3091689566338684173}
 --- !u!61 &3091689566338684173
 BoxCollider2D:
   m_ObjectHideFlags: 0
