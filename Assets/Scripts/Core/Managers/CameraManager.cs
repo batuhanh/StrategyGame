@@ -15,6 +15,7 @@ namespace StrategyGame.Core.Managers
         private Vector3 dragOrigin;
         private float mapMinX, mapMinY, mapMaxX, mapMaxY;
         private bool _isInitialized = false;
+        private bool _canMove = false;
         private void Initiliaze()
         {
             Renderer gridRenderer = GameGrid.Instance.GameGridView.GridBgRenderer;
@@ -23,7 +24,6 @@ namespace StrategyGame.Core.Managers
 
             mapMinY = gridRenderer.transform.position.y - (gridRenderer.bounds.size.y / 2f);
             mapMaxY = gridRenderer.transform.position.y + (gridRenderer.bounds.size.y / 2f);
-            dragOrigin = cam.ScreenToWorldPoint(Input.mousePosition);
             _isInitialized = true;
         }
         private void Update()
@@ -35,19 +35,28 @@ namespace StrategyGame.Core.Managers
                 if (InputManager.Instance.CurrentMouseState == MouseState.Down)
                 {
                     dragOrigin = cam.ScreenToWorldPoint(Input.mousePosition);
+                    _canMove = true;
                 }
-                if (InputManager.Instance.CurrentMouseState == MouseState.Hold)
+                else if (_canMove && InputManager.Instance.CurrentMouseState == MouseState.Hold)
                 {
                     Vector3 diff = dragOrigin - cam.ScreenToWorldPoint(Input.mousePosition);
                     cam.transform.position = ClampCamera(cam.transform.position + diff);
                 }
+                else if (InputManager.Instance.CurrentMouseState == MouseState.Up)
+                {
+                    _canMove = false;
+                }
             }
-            
+            else
+            {
+                _canMove = false;
+            }
+
         }
         private Vector3 ClampCamera(Vector3 targetPosition)
         {
-            float newX = Mathf.Clamp(targetPosition.x, mapMinX , mapMaxX );
-            float newY = Mathf.Clamp(targetPosition.y, mapMinY , mapMaxY );
+            float newX = Mathf.Clamp(targetPosition.x, mapMinX, mapMaxX);
+            float newY = Mathf.Clamp(targetPosition.y, mapMinY, mapMaxY);
 
             return new Vector3(newX, newY, targetPosition.z);
         }
