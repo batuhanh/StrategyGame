@@ -78,7 +78,6 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
                     rightClickedTarget = hit.collider.GetComponent<IDamageable>();
                     if (leftClickedSoldier != null && rightClickedTarget != null && leftClickedSoldier != rightClickedTarget as Soldier)
                     {
-                        
                         leftClickedSoldier.DecideMovement(rightClickedTarget);
                         SoldierStartedMove?.Invoke(leftClickedSoldier as IDamageable);
                     }
