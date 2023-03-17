@@ -32,6 +32,7 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
         [SerializeField] private bool _isPlaced;
         [SerializeField] private bool _canMove;
         [SerializeField] private SoldierState _state;
+        [SerializeField] private SpriteRenderer _renderer;
         private Vector3[] _path;
         private IDamageable _target;
         private float attackTimer = 1f;
@@ -79,12 +80,14 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
 
             PathFinder.Instance.FindPath(GetObjectPos(), target);
             List<WorldTile> tilePath = PathFinder.Instance.lastPath;
+            
             List<Vector3> _path = new List<Vector3>();
             for (int i = 0; i < tilePath.Count; i++)
             {
                 Vector3 worldPos = GameGrid.Instance.GameGridView.GridLayout.CellToWorld(tilePath[i].GetGridPos());
                 _path.Add(worldPos);
             }
+            
             StartCoroutine(MoveCaroutine(_path));
         }
         public override void Attack(IDamageable target)
@@ -144,7 +147,6 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
             }
             for (int i = 0; i < path.Count; i++)
             {
-               
                 Vector3 direction = ((path[i] + cellSize / 2f) - transform.position).normalized;
                 while (true)
                 {
@@ -167,6 +169,17 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
 
                 _state = SoldierState.Idle;
                 _target = null;
+            }
+        }
+        public override void SetClickedStatus(bool isClicked)
+        {
+            if (isClicked)
+            {
+                _renderer.color = Color.green;
+            }
+            else
+            {
+                _renderer.color = Color.white;
             }
         }
         private void OnEnable()

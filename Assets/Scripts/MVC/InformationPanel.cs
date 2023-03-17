@@ -47,7 +47,7 @@ namespace StrategyGame.MVC
                 _informationPanelController = new InformationPanelController(_informationPanelModel, _informationPanelView);
 
                 _informationPanelModel.Initialize(_context);
-                _informationPanelView.Initialize(_context);
+                _informationPanelView.Initialize(_context, _informationPanelController);
                 _informationPanelController.Initialize(_context);
             }
         }

@@ -1,6 +1,7 @@
 using StrategyGame.Core.Gameplay.BuildingSystem;
 using StrategyGame.Core.Gameplay.SoldierSystem;
 using StrategyGame.MVC;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,6 +25,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         [SerializeField] private Vector2 _gridPosition;
         [SerializeField] private Vector3Int _size;
         [SerializeField] private SpriteRenderer _spriteRenderer;
+        public static event Action<IShowable> militaryTowerDestroyedEvent;
         public override void CallInformationPanel()
         {
             string desc = "Health: " + CurrentHealth;
@@ -54,6 +56,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         {
             GameGrid.Instance.GameGridController.ChangeGridTileState(GetStartPosition(), Size, GameGrid.Instance.GameGridView.EmptyTile);
             BattleHandler.Instance.InvokeItemDestroyed(this);
+            militaryTowerDestroyedEvent?.Invoke(this);
             Destroy(gameObject);
         }
     }

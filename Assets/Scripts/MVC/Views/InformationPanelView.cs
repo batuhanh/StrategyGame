@@ -1,3 +1,5 @@
+using StrategyGame.Core.Gameplay.BuildingSystem;
+using StrategyGame.MVC.Controllers;
 using StrategyGame.Utils;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,14 +21,29 @@ namespace StrategyGame.MVC.Views
         [SerializeField] private Transform _productsParent;
         private bool _isInitialized = false;
         private Context _context;
-        public void Initialize(Context context) 
+        private InformationPanelController _controller;
+        public void Initialize(Context context,InformationPanelController _informationPanelController) 
         {
             if (!IsInitialized)
             {
                 _isInitialized = true;
                 _context = context;
+                _controller = _informationPanelController;
             }
         }
-        
+        private void OnEnable()
+        {
+            Barrack.barrackDestroyedEvent += _controller.CheckIsCurrentDestroyed;
+            Armory.armoryDestroyedEvent += _controller.CheckIsCurrentDestroyed;
+            PowerPlant.powerPlantDestroyedEvent += _controller.CheckIsCurrentDestroyed;
+            MilitaryTower.militaryTowerDestroyedEvent += _controller.CheckIsCurrentDestroyed;
+        }
+        private void OnDisable()
+        {
+            Barrack.barrackDestroyedEvent -= _controller.CheckIsCurrentDestroyed;
+            Armory.armoryDestroyedEvent -= _controller.CheckIsCurrentDestroyed;
+            PowerPlant.powerPlantDestroyedEvent -= _controller.CheckIsCurrentDestroyed;
+            MilitaryTower.militaryTowerDestroyedEvent -= _controller.CheckIsCurrentDestroyed;
+        }
     }
 }

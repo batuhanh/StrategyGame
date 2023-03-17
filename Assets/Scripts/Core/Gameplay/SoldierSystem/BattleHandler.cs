@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 
@@ -33,74 +34,76 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
                 Instance = this;
             }
         }
-
-        private void Update()
-        {
-            switch (InputManager.Instance.CurrentMouseState)
-            {
-                case MouseState.Down:
-                    break;
-                case MouseState.Hold:
-                    break;
-                case MouseState.Up:
-                    break;
-            }
-
-        }
         public void DetectClickedTarget(int mouseIndex, Vector3 mousePosition)
         {
-            if (mouseIndex == 0)
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
-                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 1000f, clickableLayer);
-                if (hit.collider != null)
+                if (mouseIndex == 0)
                 {
-                    leftClickedItem = hit.collider.GetComponent<IClickable>();
-                    leftClickedSoldier = hit.collider.GetComponent<Soldier>();
-                    var temp = hit.collider.GetComponent<IShowable>();
-                    if (temp != null)
+                    RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 1000f, clickableLayer);
+                    if (hit.collider != null)
                     {
-                        temp.CallInformationPanel();
+                        if (leftClickedSoldier != null)
+                        {
+                            leftClickedSoldier.SetClickedStatus(false);
+                        }
+                        leftClickedItem = hit.collider.GetComponent<IClickable>();
+                        leftClickedSoldier = hit.collider.GetComponent<Soldier>();
+                        var temp = hit.collider.GetComponent<IShowable>();
+                        if (temp != null)
+                        {
+                            temp.CallInformationPanel();
+                        }
+                        if (leftClickedSoldier != null)
+                        {
+                            leftClickedSoldier.SetClickedStatus(true);
+                        }
                     }
+                    else
+                    {
+                        Clear();
+
+                    }
+
+
                 }
-                else
+                else if (mouseIndex == 1)
                 {
+                    RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 1000f);
+                    if (hit.collider != null)
+                    {
+                        rightClickedItem = hit.collider.GetComponent<IClickable>();
+                        rightClickedTarget = hit.collider.GetComponent<IDamageable>();
+                        if (leftClickedSoldier != null && rightClickedTarget != null && leftClickedSoldier != rightClickedTarget as Soldier)
+                        {
+                            leftClickedSoldier.DecideMovement(rightClickedTarget);
+                            SoldierStartedMove?.Invoke(leftClickedSoldier as IDamageable);
+                        }
+                    }
+                    else if (GameGrid.Instance.GameGridController.IsPosOnGrid(Camera.main.ScreenToWorldPoint(mousePosition)))
+                    {
+                        TileBase clickedTile = GameGrid.Instance.GameGridController.GetTileBase(Camera.main.ScreenToWorldPoint(mousePosition));
+                        if (leftClickedSoldier != null && clickedTile == GameGrid.Instance.GameGridView.EmptyTile)
+                        {
+
+                            leftClickedSoldier.DecideMovement(Camera.main.ScreenToWorldPoint(mousePosition));
+                            SoldierStartedMove?.Invoke(leftClickedSoldier as IDamageable);
+                        }
+                    }
+                    else
+                    {
+
+                    }
                     Clear();
                 }
-                
-
-            }
-            else if (mouseIndex == 1)
-            {
-                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 1000f);
-                if (hit.collider != null)
-                {
-                    rightClickedItem = hit.collider.GetComponent<IClickable>();
-                    rightClickedTarget = hit.collider.GetComponent<IDamageable>();
-                    if (leftClickedSoldier != null && rightClickedTarget != null && leftClickedSoldier != rightClickedTarget as Soldier)
-                    {
-                        leftClickedSoldier.DecideMovement(rightClickedTarget);
-                        SoldierStartedMove?.Invoke(leftClickedSoldier as IDamageable);
-                    }
-                }
-                else if (GameGrid.Instance.GameGridController.IsPosOnGrid(Camera.main.ScreenToWorldPoint(mousePosition)))
-                {
-                    TileBase clickedTile = GameGrid.Instance.GameGridController.GetTileBase(Camera.main.ScreenToWorldPoint(mousePosition));
-                    if (leftClickedSoldier != null && clickedTile == GameGrid.Instance.GameGridView.EmptyTile)
-                    {
-                       
-                        leftClickedSoldier.DecideMovement(Camera.main.ScreenToWorldPoint(mousePosition));
-                        SoldierStartedMove?.Invoke(leftClickedSoldier as IDamageable);
-                    }
-                }
-                else
-                {
-                   
-                }
-                Clear();
             }
         }
         private void Clear()
         {
+            if (leftClickedSoldier != null)
+            {
+                leftClickedSoldier.SetClickedStatus(false);
+            }
             leftClickedItem = null;
             rightClickedItem = null;
             leftClickedSoldier = null;

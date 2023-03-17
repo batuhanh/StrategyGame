@@ -43,6 +43,12 @@ namespace StrategyGame.Core.Gameplay.PathFinding
             HashSet<WorldTile> closedSet = new HashSet<WorldTile>();
             openSet.Add(startNode);
 
+            if (GetDistance(startNode, targetNode)<15)
+            {
+             
+                lastPath = new List<WorldTile>() { targetNode };
+                return;
+            }
             while (openSet.Count > 0)
             {
                 WorldTile currentNode = openSet[0];

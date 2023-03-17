@@ -60,5 +60,11 @@ namespace StrategyGame.MVC.Controllers
                 GameObject.Destroy(_view.ProductsParent.transform.GetChild(i).gameObject);
             }
         }
+        public void CheckIsCurrentDestroyed(IShowable destroyedShowable)
+        {
+            if (_model.ClickedObject == destroyedShowable)
+                SetInformationNull();
+        }
+        
     }
 }

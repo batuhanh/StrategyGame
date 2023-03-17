@@ -32,6 +32,7 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
         [SerializeField] private bool _isPlaced;
         [SerializeField] private bool _canMove;
         [SerializeField] private SoldierState _state;
+        [SerializeField] private SpriteRenderer _renderer;
         private Vector3[] _path;
         private IDamageable _target;
         private float attackTimer = 1f;
@@ -74,6 +75,7 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
         public override void Move(Vector3 target)
         {
             GameGrid.Instance.GameGridController.ChangeGridTileState(transform.position, Vector3Int.zero, GameGrid.Instance.GameGridView.EmptyTile);
+
             State = SoldierState.Moving;
 
             PathFinder.Instance.FindPath(GetObjectPos(), target);
@@ -137,12 +139,13 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
                     path.RemoveAt(i);
                 }
                 else
-                {          
+                {
                     break;
                 }
             }
             for (int i = 0; i < path.Count; i++)
             {
+
                 Vector3 direction = ((path[i] + cellSize / 2f) - transform.position).normalized;
                 while (true)
                 {
@@ -165,6 +168,17 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
 
                 _state = SoldierState.Idle;
                 _target = null;
+            }
+        }
+        public override void SetClickedStatus(bool isClicked)
+        {
+            if (isClicked)
+            {
+                _renderer.color = Color.green;
+            }
+            else
+            {
+                _renderer.color = Color.white;
             }
         }
         private void OnEnable()

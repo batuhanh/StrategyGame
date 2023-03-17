@@ -164,3 +164,4 @@ MonoBehaviour:
   _isPlaced: 0
   _canMove: 0
   _state: 0
+  _renderer: {fileID: 8040965543387258132}

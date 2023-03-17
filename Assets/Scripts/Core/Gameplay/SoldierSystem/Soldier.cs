@@ -3,7 +3,6 @@ using StrategyGame.MVC;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Scripting.APIUpdating;
 
 namespace StrategyGame.Core.Gameplay.SoldierSystem
 {
@@ -23,6 +22,7 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
         public abstract void DecideMovement(Vector3 target);
         public abstract void DecideMovement(IDamageable target);
         public abstract void CallInformationPanel();
+        public abstract void SetClickedStatus(bool isClicked);
         public Vector3 GetObjectPos()
         {
             return transform.position;

@@ -1,5 +1,6 @@
 using StrategyGame.Core.Gameplay.SoldierSystem;
 using StrategyGame.MVC;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +27,8 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         [SerializeField] private Vector3Int _size;
         [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private GameObject[] _productPrefabs;
+
+        public static event Action<IShowable> barrackDestroyedEvent;
         public override void CallInformationPanel()
         {
             string desc = "Health: " + CurrentHealth;
@@ -56,6 +59,7 @@ namespace StrategyGame.Core.Gameplay.BuildingSystem
         {
             GameGrid.Instance.GameGridController.ChangeGridTileState(GetStartPosition(), Size, GameGrid.Instance.GameGridView.EmptyTile);
             BattleHandler.Instance.InvokeItemDestroyed(this);
+            barrackDestroyedEvent?.Invoke(this);
             Destroy(gameObject);
         }
 
