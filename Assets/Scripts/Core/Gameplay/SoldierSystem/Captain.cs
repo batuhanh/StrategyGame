@@ -74,8 +74,7 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
         public override void Move(Vector3 target)
         {
             GameGrid.Instance.GameGridController.ChangeGridTileState(transform.position, Vector3Int.zero, GameGrid.Instance.GameGridView.EmptyTile);
-            //Vector3Int cellPos = GameGrid.Instance.GameGridView.GridLayout.WorldToCell(target);
-            //Vector3 actTarget = GameGrid.Instance.GameGridView.Grid.GetCellCenterWorld(cellPos);
+           
             State = SoldierState.Moving;
 
             PathFinder.Instance.FindPath(GetObjectPos(), target);
@@ -145,12 +144,7 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
             }
             for (int i = 0; i < path.Count; i++)
             {
-                // TileBase curTileBase = GameGrid.Instance.GameGridController.GetTileBase(path[i]);
-
-                /*if (curTileBase == GameGrid.Instance.GameGridView.SoldierTile && i == path.Count - 1)
-                {
-                    break;
-                }*/
+                
                 Vector3 direction = ((path[i] + cellSize / 2f) - transform.position).normalized;
                 while (true)
                 {
