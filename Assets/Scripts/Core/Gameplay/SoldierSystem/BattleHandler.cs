@@ -69,11 +69,11 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
                 }
                 else if (mouseIndex == 1)
                 {
-                    Debug.Log("RightClcked");
+                   
                     RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 1000f);
                     if (hit.collider != null)
                     {
-                        Debug.Log("RightClckedHitted");
+                   
                         rightClickedItem = hit.collider.GetComponent<IClickable>();
                         rightClickedTarget = hit.collider.GetComponent<IDamageable>();
                         if (leftClickedSoldier != null && rightClickedTarget != null && leftClickedSoldier != rightClickedTarget as Soldier)
