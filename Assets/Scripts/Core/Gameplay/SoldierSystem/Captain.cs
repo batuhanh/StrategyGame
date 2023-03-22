@@ -146,11 +146,12 @@ namespace StrategyGame.Core.Gameplay.SoldierSystem
             for (int i = 0; i < path.Count; i++)
             {
 
-                Vector3 direction = ((path[i] + cellSize / 2f) - transform.position).normalized;
+                
                 while (true)
                 {
+                    Vector3 direction = ((path[i] + cellSize / 2f) - transform.position).normalized;
                     transform.position += direction * moveSpeed * Time.deltaTime;
-                    if (Vector3.Distance(transform.position, (path[i] + cellSize / 2f)) < 0.05f)
+                    if (Vector3.Distance(transform.position, (path[i] + cellSize / 2f)) < 0.1f)
                     {
                         transform.position = (path[i] + cellSize / 2f);
                         break;
