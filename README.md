@@ -1,6 +1,7 @@
 # StrategyGame
 Case study for Panteon
 
+I implemented A* algorithm to finding closest path. 
 **Architecture** \
 ● MVC 
 
